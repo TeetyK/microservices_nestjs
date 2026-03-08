@@ -1,12 +1,14 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { LoggingServiceService } from './logging-service.service';
+import { EventPattern, Payload } from '@nestjs/microservices';
 
 @Controller()
 export class LoggingServiceController {
   constructor(private readonly loggingServiceService: LoggingServiceService) {}
 
-  @Get()
-  getHello(): string {
-    return this.loggingServiceService.getHello();
+  @EventPattern('log_message')
+  handleLogMessage(@Payload() data: any) {
+    console.log('Logging message:', data.message);
+    // In a real app, you would write this to a file, database, or external logging service
   }
 }
