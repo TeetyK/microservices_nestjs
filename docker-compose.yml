@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  redis:
+    image: redis:alpine
+    ports:
+      - '6379:6379'
+
+  uber-services:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: npm run start:dev uber-services
+    ports:
+      - '3000:3000'
+    depends_on:
+      - redis
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+  rider-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: npm run start:dev rider-service
+    depends_on:
+      - redis
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+  logging-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: npm run start:dev logging-service
+    depends_on:
+      - redis
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
